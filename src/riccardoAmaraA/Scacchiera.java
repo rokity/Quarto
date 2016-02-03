@@ -15,58 +15,40 @@ public class Scacchiera{
 		this.path= p;
 	}
 	
-	public void creaScacchiera() throws FileNotFoundException{
-		File f=new File(this.path);
-		f.delete();
-		
-		FileOutputStream prova = new FileOutputStream(this.path);
-        PrintStream scrivi = new PrintStream(prova);
-        for(int i=0;i<4;i++)
-        {
-              scrivi.println("* * * *");
-        }
-	}
+	
 
 	public boolean esistenzaFile() {
-		File a = new File(this.path);
-		
-		return a.exists();
+		// TODO Auto-generated method stub
+		FileReader f;	
+	    try {
+			f=new FileReader(path);
+	    BufferedReader b=new BufferedReader(f);    
+	    String s=" ";	    
+	    while((s=b.readLine())!=null) {          
+	      
+	    }    
+	   
+	    } catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+	    	return false;
+		} catch (IOException e) {
+			return false;
+		}
+	    return true;
 	}
 
-	public boolean turno() {
-		 int i=0;
-		FileReader f;
-		try {
-			f=new FileReader(this.path);
-			BufferedReader b;
-		    b=new BufferedReader(f);
-		    String s=" ";	
-		   
-		    while(s!=null) {
-		      s=b.readLine();
-		      
-		      if(s!=null)
-		      if (s.length()!=7){	  
-		    	  return false;
-		    	  
-		      }
-		       
-		    }
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-		return false;
-		}
-	    
-	 return true;
-	 
-	}
+	
+//	
 	
 	
 	public boolean posizionaPedina(String posizione, String pedina){
 		FileReader f;
 		
-		int riga = Integer.valueOf(posizione.substring(0,1));
-		int colonna = Integer.valueOf(posizione.substring(1,2));
+		posizione=posizione.toLowerCase();
+		int riga = Integer.valueOf(posizione.charAt(0))-48;
+		//System.out.println(riga);
+		int colonna = Integer.valueOf(posizione.charAt(2))-48;
+		//System.out.println(colonna);
 		ArrayList<String> fileScacchiera = new ArrayList<String>();
 		
 		
@@ -76,24 +58,21 @@ public class Scacchiera{
 		    b=new BufferedReader(f);
 		    String s=" ";	
 		    int i = 0;
-		    while(s==null) {
-		      s=b.readLine();
+		    while((s=b.readLine())!=null) {
+		       
 		    if (i==riga){
-		    	String[] array=s.split(" ");
-		    	if (array[colonna]!="*")
-		    			return false;
-		    	else
-		    	{
+		    	String[] array=s.split(" ");	    	
+		    		    	
 			    	array [colonna] = pedina;
 		    		String appoggio = array [0] + " " + array [1] + " " ;
 		    		appoggio = appoggio + array [2] + " " + array [3];
 		    		fileScacchiera.add(appoggio);
 		    		
-		    	}
+		    	
 		    
-		    }
-		    
-		    else {fileScacchiera.add(s);
+		    }		    
+		    else {
+		    	fileScacchiera.add(s);
 		    
 		    }
 		      i++;
@@ -101,7 +80,8 @@ public class Scacchiera{
 		    }
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			return false;
+			System.out.println("NN HA SCRITTO");
+			//return false;
 		}
 		
 		
@@ -112,7 +92,7 @@ public class Scacchiera{
 		try {
 			prova = new FileOutputStream(this.path);
 			PrintStream scrivi = new PrintStream(prova);
-	        for(int i=0;i<4;i++)
+	        for(int i=0;i<fileScacchiera.size();i++)
 	        {
 	              scrivi.println(fileScacchiera.get(i));
 	        }
@@ -126,8 +106,145 @@ public class Scacchiera{
 	}
 
 	public int risultati() {
-		// TODO Auto-generated method stub
-		return 0;
+		FileReader f;
+		String[][] matrice= new String[4][4];
+		
+		try {
+			f=new FileReader(this.path);		
+		BufferedReader b=new BufferedReader(f);
+	    String s=null;	
+	    int r=0;
+	    
+	    
+	    while((s=b.readLine())!=null) {
+		      
+		      String[] riga=s.split(" ");
+		      
+		      for(int i=0;i<riga.length;i++){
+		    	   matrice[r][i]=riga[i];
+		    	  }
+		      r++;
+		      
+	    }
+	    
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
+		boolean result=false;
+		//CONTROLLO RIGA
+		for(int i=0;i<4;i++)
+		result=this.controlloCongruenzaCaratteristica(matrice[i])==true?true:false;
+		//CONTROLLO COLONNA
+		for(int i=0;i<4;i++){
+		String[] array={matrice[0][i],matrice[1][i],matrice[2][i],matrice[3][i]};
+		result=this.controlloCongruenzaCaratteristica(array)==true?true:false;
+		}
+		//CONTROLLO DIAGONALE
+		String[] array={matrice[0][0],matrice[1][1],matrice[2][2],matrice[3][3]};
+		String[] array1={matrice[0][3],matrice[1][2],matrice[2][1],matrice[3][0]};
+		result=this.controlloCongruenzaCaratteristica(array)==true?true:false;
+		result=this.controlloCongruenzaCaratteristica(array1)==true?true:false;
+		
+		
+		
+		if(result==true){
+			System.out.println("VITTORIA");
+			return 1;//VITTORIA	
+		}
+		else{
+			if(this.pareggio()==true){
+				System.out.println("PAREGGIO");
+				return 2;//PAREGGIO
+			}
+			else{System.out.println("PROSSIMO TURNO");
+				return 0;//NESSUN VINCITORE,NESSUNA PARITA
+			}
+			}
+		
+	}
+	
+	private boolean pareggio(){
+		FileReader f;
+		int r=0;
+		try {
+			f=new FileReader(this.path);		
+		BufferedReader   b=new BufferedReader(f);
+	    String s=" ";		    
+	    while((s=b.readLine())!=null) {
+		       
+		      if(s.length()==19)
+		      r++;
+		      
+	    }
+	    
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		System.exit(0);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		System.exit(0);
+	}
+		if(r==4)
+			return true;
+		else
+			return false;
+					
+		
+	
+	}
+	
+	private boolean controlloCongruenzaCaratteristica(String[] rigaScacchiera){
+		int count=0;
+		
+		for(int i=0;i<rigaScacchiera[0].length();i++){			
+			for(int j=1;j<rigaScacchiera.length;j++){
+				if(rigaScacchiera[j].length()==4){
+				if(rigaScacchiera[j].charAt(i)==rigaScacchiera[0].charAt(i))
+					count++;
+				}
+			}
+			if(count==3)
+				return true;
+			else
+				count=0;
+			}
+	
+		return false;
+	}
+
+	public boolean leggibilitaFile() {
+		
+		FileReader f;
+		int r=0;
+		try {
+			f=new FileReader(this.path);		
+		BufferedReader   b=new BufferedReader(f);
+	    String s=" ";		    
+	    while((s=b.readLine())!=null) {
+		     
+		      String[] riga=s.split(" ");
+		      for(int i=0;i<riga.length;i++){
+		    	  if(riga[i].length()!=4) 
+		    		  if(riga[i].charAt(0)!='*')
+		    			  return false;
+		      }
+	    }
+	    
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		System.exit(0);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		System.exit(0);
+	}
+		return true;
+	}
+	
+	
+	
 	
 }//end class
