@@ -1,7 +1,7 @@
 package Main;
 
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Random;
 
 import riccardoAmaraA.Pedine;
 import riccardoAmaraA.Scacchiera;
@@ -40,26 +40,22 @@ public class Main {
 		
 		
 			//INIZIA IL GIOCO , POSIZIONO PEDINA SCELTA DALL'UTENTE PRIMA 
-			String pedina=p.dammiPedinaScelta();
-			System.out.println("La pedina da posizionare è "+pedina);
-			Scanner in = new Scanner(System.in);
+			String pedina=p.dammiPedinaScelta();				
 			String posizione;boolean check=true;
-			do{
-			System.out.println("Dammi le coordinate (riga,colonna):");
-			posizione=in.nextLine();		
+			Random random = new Random();
+			do{			
+			int r = random.nextInt(4);
+			int c= random.nextInt(4);
+			posizione=r+","+c;		
 			int index=posizione.indexOf(",");
 			check=true;
 			if(index==-1){
-				check=false;
-				System.out.println("Input errato");
+				check=false;				
 			}
 			if(posizione.contains("[a-zA-Z]+")==true)
 				{
-				check=false;
-				System.out.println("Input errato");
-				}
-			
-			
+				check=false;				
+				}			
 			}while(check==false);			
 			sc.posizionaPedina(posizione, pedina);
 			
@@ -70,17 +66,13 @@ public class Main {
 			//SCELGO PEDINA PER PROSSIMO GIOCATORE
 			check=true;
 			do{
-			System.out.println("Scegli Pedina per il prossimo turno:");
-			ArrayList<String> pedine=p.getPedine();
-			for(int i=0;i<pedine.size();i++)
-				System.out.println(pedine.get(i));
-			String pScelta=in.nextLine();
+			ArrayList<String> pedine=p.getPedine();					
+			String pScelta=pedine.get(random.nextInt(pedine.size()));
 			if(pScelta.length()!=4){
-				check=false;
-			System.out.println("Input errato");
-			}
-									
-			check=p.inserisciAsterisco(pScelta);		
+				check=false;			
+			}else{									
+			check=p.inserisciAsterisco(pScelta);
+			}			
 			}while(check==false);
 			
 			

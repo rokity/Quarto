@@ -137,25 +137,21 @@ public class Scacchiera{
 		boolean result=false;
 		//CONTROLLO RIGA
 		for(int i=0;i<4;i++)
-		result=this.controlloCongruenzaCaratteristica(matrice[i])==true?true:false;
+		if(this.controlloCongruenzaCaratteristica(matrice[i]))return 1;
 		//CONTROLLO COLONNA
 		for(int i=0;i<4;i++){
 		String[] array={matrice[0][i],matrice[1][i],matrice[2][i],matrice[3][i]};
-		result=this.controlloCongruenzaCaratteristica(array)==true?true:false;
+		if(this.controlloCongruenzaCaratteristica(array))return 1;
 		}
 		//CONTROLLO DIAGONALE
 		String[] array={matrice[0][0],matrice[1][1],matrice[2][2],matrice[3][3]};
 		String[] array1={matrice[0][3],matrice[1][2],matrice[2][1],matrice[3][0]};
-		result=this.controlloCongruenzaCaratteristica(array)==true?true:false;
-		result=this.controlloCongruenzaCaratteristica(array1)==true?true:false;
+		if(this.controlloCongruenzaCaratteristica(array))return 1;
+		if(this.controlloCongruenzaCaratteristica(array1))return 1;
 		
 		
 		
-		if(result==true){
-			System.out.println("VITTORIA");
-			return 1;//VITTORIA	
-		}
-		else{
+		
 			if(this.pareggio()==true){
 				System.out.println("PAREGGIO");
 				return 2;//PAREGGIO
@@ -163,8 +159,7 @@ public class Scacchiera{
 			else{System.out.println("PROSSIMO TURNO");
 				return 0;//NESSUN VINCITORE,NESSUNA PARITA
 			}
-			}
-		
+					
 	}
 	
 	private boolean pareggio(){
